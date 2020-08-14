@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express_1 = require("express");
+var router = express_1.Router();
+var pet_controller_1 = require("../controllers/pet.controller");
+router.get('/pets', pet_controller_1.getPets);
+router.post('/pets', pet_controller_1.createPet);
+router.get('/pets/:id', pet_controller_1.getPet);
+router.put('/pets/:id', pet_controller_1.updatePet);
+router.delete('/pets/:id', pet_controller_1.deletePet);
+exports.default = router;
