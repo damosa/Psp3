@@ -1,8 +1,8 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import shortid from 'shortid';
 import PropTypes from 'prop-types';
 
-const Formulario = ({crearCita}) => {
+const Formulario = ({crearCita, idCita, actualizarCitas}) => {
 
     //Crear State de Citas
         const [cita, actualizarCita]= useState({
@@ -39,13 +39,13 @@ const Formulario = ({crearCita}) => {
              //actualizar Error
              actualizarError(false);
              //Asignar un ID 
-             cita.id= shortid();
-
-             //Crear la cita
-             crearCita(cita);
-             
-
-
+             if(idCita === "") {
+                cita.id= shortid();
+                //Crear la cita
+                crearCita(cita);
+             } else {
+                actualizarCitas(cita);
+             }
              //Reiniciar el Form 
              actualizarCita({
                 mascota: '',
@@ -55,6 +55,20 @@ const Formulario = ({crearCita}) => {
                 sintomas:''
              })
         }
+
+    useEffect(() => {
+        if(idCita !== ""){
+            const citas =  JSON.parse(localStorage.getItem('citas'));
+            const cita = citas.filter(cita => {
+                return cita.id === idCita
+            })
+            actualizarCita(cita[0])
+        }
+        return () => {
+            
+        }
+    }, [idCita])
+
     return ( 
         <Fragment>
             <h2>Crear Cita</h2>
@@ -105,14 +119,15 @@ const Formulario = ({crearCita}) => {
                 <button
                     type="submit"
                     className="u-full-width button-primary"
-                >Agregar</button>
+                >{idCita !== "" ? "Modificar" : "Agregar"}</button>
 
             </form>
-
+            
         </Fragment>
      );
 }
   Formulario.propTypes={
-      crearCita: PropTypes.func.isRequired
+      crearCita: PropTypes.func.isRequired,
+      idCita: PropTypes.string
   }
 export default Formulario;

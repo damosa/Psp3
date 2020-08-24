@@ -11,8 +11,9 @@ function App() {
       citasIniciales = [];
     }
     //Arreglo de citas
-    const [citas, guardarCitas] = useState([citasIniciales]);
-
+    const [citas, guardarCitas] = useState(citasIniciales);
+    const [idCita, setIdCita] = useState("");
+    
     //Funcion use Effect para realizar ciertas operaciones cuando el state cambia
     useEffect(() => {
       if(citasIniciales){
@@ -35,10 +36,25 @@ function App() {
       const nuevasCitas = citas.filter(cita => cita.id !== id);
       guardarCitas(nuevasCitas);
     }
+    //Funcion que modifica una cita
+    const modificarCita = id => {
+      console.debug(id);
+      setIdCita(id);
+    }
+
+    const actualizarCitas = (cita) => {
+      console.log(cita);
+      const index = citas.findIndex(element => {
+        return element.id === cita.id
+      });
+      const citasCopy = JSON.parse(JSON.stringify(citas));
+      citasCopy[index] = cita;
+      guardarCitas(citasCopy);
+      setIdCita("");
+    }
 
     //Mensaje Condicional
     const titulo = citas.length === 0 ? 'No hay citas' : 'Administra tus citas';
-
   return (
     <Fragment>
        <h1>Administrador de pacientes</h1>
@@ -46,7 +62,9 @@ function App() {
         <div className="row">
             <div className="one-half column">
               <Formulario 
-              crearCita={crearCita}
+                crearCita={crearCita}
+                actualizarCitas={actualizarCitas}
+                idCita={idCita}
                 />
             </div>
             <br></br>
@@ -57,7 +75,7 @@ function App() {
                   key={cita.id}
                   cita={cita}
                   eliminarCita={eliminarCita}
-                
+                  modificarCita={modificarCita}
                 />  
               ))}
             </div>
